@@ -170,14 +170,14 @@ def sfx(text: str, color: str = "#FF6B35", size: str = "1.6rem",
 def pnl(content: str, bg: str = "#fff", flex: str = "1",
         extra: str = "") -> str:
     return (f'<div style="background:{bg};border:3.5px solid #111;padding:8px 6px;'
-            f'flex:{flex};min-height:0;display:flex;flex-direction:column;'
+            f'flex:{flex};display:flex;flex-direction:column;'
             f'align-items:center;justify-content:center;gap:5px;'
-            f'overflow:hidden;box-sizing:border-box;{extra}">{content}</div>')
+            f'box-sizing:border-box;{extra}">{content}</div>')
 
 
 def row(*panels: str, flex: str = "1") -> str:
     inner = "".join(panels)
-    return (f'<div style="display:flex;gap:3px;flex:{flex};min-height:0;">{inner}</div>')
+    return f'<div style="display:flex;gap:3px;">{inner}</div>'
 
 
 def pg(pid: int, title_bg: str, title_text: str, body: str,
@@ -189,11 +189,11 @@ def pg(pid: int, title_bg: str, title_text: str, body: str,
               border-bottom:3px solid {title_bg};flex-shrink:0;">
     {title_text}
   </div>
-  <div style="display:flex;flex-direction:column;gap:3px;flex:1;min-height:0;padding:3px;">
+  <div style="display:flex;flex-direction:column;gap:3px;padding:3px;">
     {body}
   </div>
   <div style="text-align:right;font-size:0.6rem;color:#888;
-              padding:2px 6px;flex-shrink:0;background:#fff;">
+              padding:2px 6px;background:#fff;">
     {sub}
   </div>
 </div>"""
@@ -592,11 +592,15 @@ html, body {{
     flex: 1;
     min-height: 0;
     display: flex;
-    align-items: stretch;
+    align-items: flex-start;
     justify-content: center;
     padding: 3px;
-    overflow: hidden;
+    overflow-y: auto;
+    overflow-x: hidden;
 }}
+#page-area::-webkit-scrollbar {{ width: 5px; }}
+#page-area::-webkit-scrollbar-track {{ background: #222; }}
+#page-area::-webkit-scrollbar-thumb {{ background: #FF6B35; border-radius: 4px; }}
 
 /* ── 各漫画ページ ── */
 .manga-page {{
@@ -606,8 +610,9 @@ html, body {{
     flex-direction: column;
     background: #fff;
     border: 4px solid #111;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: 0 6px 24px rgba(0,0,0,0.6);
+    flex-shrink: 0;
 }}
 </style>
 </head>
@@ -639,6 +644,7 @@ function showPage(n) {{
   document.getElementById('page-title').textContent = TITLES[n];
   document.getElementById('btn-prev').disabled = (n === 0);
   document.getElementById('btn-next').disabled = (n === total - 1);
+  document.getElementById('page-area').scrollTop = 0;
   cur = n;
 }}
 
@@ -665,4 +671,4 @@ showPage(0);
 
 # ── Streamlit ────────────────────────────────────────────────────
 
-components.html(build_manga_html(), height=720, scrolling=False)
+components.html(build_manga_html(), height=740, scrolling=False)
